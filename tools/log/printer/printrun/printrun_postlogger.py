@@ -5,6 +5,7 @@ import errno
 from socket import error as socket_error
 import httplib, urllib
 import json
+from bson import json_util
 import datetime
 import pprint
 import logging
@@ -13,7 +14,9 @@ import logging
 logFile = 'log.txt'
 ws={}
 ws['server']= "localhost:8888"
-ws['url']= "/ws/usage/new"
+ws['url']= "/ws/usage"
+
+#~ =====================================================================
 
 #~ Prepare log
 logging.basicConfig(filename=logFile,level=logging.INFO)
@@ -35,14 +38,16 @@ else:
 #~ Required data
 stats = {}
 stats['logType'] = '3Dprinter'
-stats['date'] = str(datetime.datetime.now())
+stats['date'] = datetime.datetime.utcnow()
 stats['tool'] = sys.argv[1]
-stats['duration'] = int(sys.argv[2])
+
+#~ Optional data
 stats['object'] = {}
 stats['material quantity'] = 0
+stats['duration'] = sys.argv[2]
 
 #~ Check if it is an error or not
-if stats['duration'] < 0:
+if stats['duration'] == "-1":
     stats['result'] = 'Error'
     stats['errorMessage'] = sys.argv[3]
     logging.info('Print failed: '+stats['errorMessage'])
@@ -58,6 +63,7 @@ else:
     for line in open(stats['object']['file'], 'r'):
         if re.search('^;', line):
             if line == None:
+                logging.error('no matches found in '+stats['object']['file'])
                 print 'no matches found'
             else:
                 if re.search('^; generated', line):
@@ -75,7 +81,7 @@ headers = {"Content-type": "application/x-www-form-urlencoded",
            "Accept": "text/plain"}
 try:
     conn = httplib.HTTPConnection(ws['server'])
-    conn.request("POST", ws['url'], json.dumps(stats), headers)
+    conn.request("POST", ws['url'], json.dumps(stats, default=json_util.default), headers)
     logging.info('Data sent to '+ws['server']+ws['url'])
     response = conn.getresponse()
     if response.status == 200:

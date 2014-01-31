@@ -3,18 +3,31 @@
 import tornado.httpserver, tornado.ioloop, tornado.options, tornado.web, tornado.httputil
 import os.path, random, string
 import json
+from bson import json_util
 import pprint
+from pymongo import MongoClient
+import logging
+import datetime
 
 #~ Parameters
 serverPort = 8888
+logFile = 'server.log'
 
+#~ Prepare log
+logging.basicConfig(filename=logFile,level=logging.INFO)
 
+#~ Mongo Database
+client = MongoClient()
+db = client.fablab
+usage = db.usage
+
+#~ URL router
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r"/", IndexHandler),
             (r"/upload", UploadHandler),
-            (r"/ws/usage/new", UsageNew),
+            (r"/ws/usage", UsageNew),
             (r"/img/(.*)",tornado.web.StaticFileHandler, {"path": "./img"},),
             (r"/js/(.*)", tornado.web.StaticFileHandler, {"path": "./js"}),
             (r"/css/(.*)", tornado.web.StaticFileHandler, {"path": "./css"}),
@@ -27,7 +40,12 @@ class IndexHandler(tornado.web.RequestHandler):
 
 class UsageNew(tornado.web.RequestHandler):
     def post(self):
-        print pprint.pprint(json.loads(self.request.body))
+        usage_data_json = json.loads(self.request.body, object_hook=json_util.object_hook)
+        usage_id = usage.insert(usage_data_json)
+        logging.info('new usage')
+        logging.info(pprint.pformat(usage_data_json))
+    def get(self):
+        self.write(json.dumps(usage.find()))
 
 class UploadHandler(tornado.web.RequestHandler):
     def post(self):
@@ -59,6 +77,8 @@ class UploadHandler(tornado.web.RequestHandler):
 def main():
     http_server = tornado.httpserver.HTTPServer(Application())
     http_server.listen(serverPort)
+    logging.info('----------------------------------------')
+    logging.info('Server loaded - '+ str(datetime.datetime.now()))
     print "FabM server - https://github.com/davidblaisonneau/fabm"
     print "------------------------------------------------------"
     print "server started on port: "+str(serverPort)
