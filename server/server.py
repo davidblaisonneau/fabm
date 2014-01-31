@@ -2,8 +2,8 @@
 
 import tornado.httpserver, tornado.ioloop, tornado.options, tornado.web, tornado.httputil
 import os.path, random, string
-import json
 from bson import json_util
+import json
 import pprint
 from pymongo import MongoClient
 import logging
@@ -27,7 +27,7 @@ class Application(tornado.web.Application):
         handlers = [
             (r"/", IndexHandler),
             (r"/upload", UploadHandler),
-            (r"/ws/usage", UsageNew),
+            (r"/ws/usage", FabMUsage),
             (r"/img/(.*)",tornado.web.StaticFileHandler, {"path": "./img"},),
             (r"/js/(.*)", tornado.web.StaticFileHandler, {"path": "./js"}),
             (r"/css/(.*)", tornado.web.StaticFileHandler, {"path": "./css"}),
@@ -38,14 +38,15 @@ class IndexHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("form.html")
 
-class UsageNew(tornado.web.RequestHandler):
+class FabMUsage(tornado.web.RequestHandler):
     def post(self):
         usage_data_json = json.loads(self.request.body, object_hook=json_util.object_hook)
         usage_id = usage.insert(usage_data_json)
         logging.info('new usage')
         logging.info(pprint.pformat(usage_data_json))
     def get(self):
-        self.write(json.dumps(usage.find()))
+        usage_list = usage.find().sort([('date',-1)]).limit(100)
+        self.write(json.dumps(list(usage_list), default=json_util.default))
 
 class UploadHandler(tornado.web.RequestHandler):
     def post(self):
