@@ -5,6 +5,10 @@ import os.path, random, string
 import json
 import pprint
 
+#~ Parameters
+serverPort = 8888
+
+
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
@@ -54,8 +58,10 @@ class UploadHandler(tornado.web.RequestHandler):
 
 def main():
     http_server = tornado.httpserver.HTTPServer(Application())
-    http_server.listen(8888)
-    print "server started"
+    http_server.listen(serverPort)
+    print "FabM server - https://github.com/davidblaisonneau/fabm"
+    print "------------------------------------------------------"
+    print "server started on port: "+str(serverPort)
     tornado.ioloop.IOLoop.instance().start()
 
 if __name__ == "__main__":

@@ -1,21 +1,23 @@
+#!/usr/bin/python
 import re
 import sys
+import errno
+from socket import error as socket_error
 import httplib, urllib
 import json
 import datetime
 import pprint
 import logging
-import errno
-from socket import error as socket_error
 
 #~ Params
 logFile = 'log.txt'
 ws={}
 ws['server']= "localhost:8888"
-ws['url']= "/usage/push/printer"
+ws['url']= "/ws/usage/new"
 
 #~ Prepare log
 logging.basicConfig(filename=logFile,level=logging.INFO)
+logging.info('----------------------------------------')
 logging.info('New object printed')
 
 #~ Check args
@@ -78,10 +80,13 @@ try:
     response = conn.getresponse()
     if response.status == 200:
         logging.info('Server response: OK')
+        print "Data sent"
     else:
-        logging.error('Server error: '+str(response))
+        logging.error('Server error: ['+str(response.status)+'] : '+response.reason)
+        print "Cannot push to server, please, see logs"
 except (httplib.HTTPException, socket_error) as ex: 
     logging.error('Error received: '+str(ex))
+    print "Cannot push to server, please, see logs"
 
 
 
