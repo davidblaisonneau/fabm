@@ -27,7 +27,10 @@ class Application(tornado.web.Application):
         handlers = [
             (r"/", IndexHandler),
             (r"/upload", UploadHandler),
-            (r"/ws/usage", FabMUsage),
+            (r"/ws/usage/(.*)", FabMUsage),
+            (r"/angularjs/(.*)",tornado.web.StaticFileHandler, {"path": "./angularjs"},),
+            (r"/static/(.*)",tornado.web.StaticFileHandler, {"path": "./static"},),
+            (r"/lib/(.*)",tornado.web.StaticFileHandler, {"path": "./lib"},),
             (r"/img/(.*)",tornado.web.StaticFileHandler, {"path": "./img"},),
             (r"/js/(.*)", tornado.web.StaticFileHandler, {"path": "./js"}),
             (r"/css/(.*)", tornado.web.StaticFileHandler, {"path": "./css"}),
@@ -45,6 +48,7 @@ class FabMUsage(tornado.web.RequestHandler):
         logging.info('new usage')
         logging.info(pprint.pformat(usage_data_json))
     def get(self):
+        #~ print "**** URI = "+self.request.uri
         usage_list = usage.find().sort([('date',-1)]).limit(100)
         self.write(json.dumps(list(usage_list), default=json_util.default))
 
