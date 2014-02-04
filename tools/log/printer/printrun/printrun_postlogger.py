@@ -13,8 +13,8 @@ import logging
 #~ Params
 logFile = 'log.txt'
 ws={}
-ws['server']= "localhost:8888"
-ws['url']= "/ws/usage"
+ws['server']= "localhost:8000"
+ws['url']= "/fabm/ws/usage"
 
 #~ =====================================================================
 

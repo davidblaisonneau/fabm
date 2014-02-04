@@ -85,9 +85,11 @@ use_janrain(auth, filename='private/janrain.key')
 
 db.define_table('usage',
         Field('date','datetime'),
+        Field('fabmanager','text'),
+        Field('user','text'),
         Field('duration','text'),
         Field('logType','text'),
-        Field('material quantity','text'),
+        Field('material_quantity','text'),
         Field('object','json'),
         Field('result','text'),
         Field('tool','text'),
