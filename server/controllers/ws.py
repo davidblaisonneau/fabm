@@ -1,9 +1,6 @@
 from pymongo import MongoClient
 from bson import json_util
 import json
-client = MongoClient()
-dbm = client.fablab
-usagem = dbm.usage
 
 @request.restful()
 def usage():
@@ -17,10 +14,12 @@ def usage():
         #~ return dict(message=BEAUTIFY(list(usage_list)))
         
     def POST(*args,**vars):
+        client = MongoClient()
+        dbm = client.fablab
         #~ return dict(message=BEAUTIFY(request.body.read()))
         usage_data_json = request.body.read()
-        usage_id = usage.insert(usage_data_json)
-        return_ok
+        usage_id = db.usage.bulk_insert([usage_data_json])
+        return dict(usage_id=usage_id)
         
     #~ def PUT(*args,**vars):
         #~ return dict(message=BEAUTIFY(request))
