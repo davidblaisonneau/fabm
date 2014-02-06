@@ -43,7 +43,7 @@ stats['tool'] = sys.argv[1]
 
 #~ Optional data
 stats['object'] = {}
-stats['material quantity'] = 0
+stats['material_quantity'] = 0
 stats['duration'] = sys.argv[2]
 
 #~ Check if it is an error or not
@@ -70,9 +70,9 @@ else:
                     stats['object']['gcode-generation']=line.strip("\n; ")
                 elif re.search('=', line):
                     match = pattern.match(line)
-                    stats['object'][match.group(1)]=match.group(2)
+                    stats['object'][match.group(1).replace(' ','_')]=match.group(2)
                     if match.group(3) and match.group(1) == 'filament used':
-                        stats['material quantity']=match.group(4)
+                        stats['material_quantity']=match.group(4)
     logging.debug('GCode parsed')
     logging.info(pprint.pformat(stats))
 
