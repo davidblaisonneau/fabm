@@ -186,6 +186,7 @@
 'Web2py': 'Web2py',
 'Welcome': 'Bienvenue',
 'Welcome %s': 'Bienvenue %s',
+'Welcome to FabM!': 'Welcome to FabM!',
 'Welcome to web2py': 'Bienvenue à web2py',
 'Welcome to web2py!': 'Bienvenue à web2py!',
 'Which called the function %s located in the file %s': 'Qui a appelé la fonction %s se trouvant dans le fichier %s',

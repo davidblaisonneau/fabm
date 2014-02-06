@@ -84,6 +84,7 @@ try:
     conn.request("POST", ws['url'], json.dumps(stats, default=json_util.default), headers)
     logging.info('Data sent to '+ws['server']+ws['url'])
     response = conn.getresponse()
+    print response.read()
     if response.status == 200:
         logging.info('Server response: OK')
         print "Data sent"

@@ -1,18 +1,19 @@
+from bson import json_util
+import json
+        
 @request.restful()
 def usage():
-    def GET(id = 0):
+    def GET(id = 0,val=""):
         res = db.usage if id==0 else db.usage.id==id
-        usages = db(res).select(orderby=~db.usage.date,limitby=(0, 10))
-        return dict(usages=usages)
-        #~ return dict(usages=usages)
-        #~ return db['usage'].
-        #~ usage_list = usage.find().sort([('date',-1)]).limit(100)
-        #~ return dict(message=BEAUTIFY(list(usage_list)))
-        
+        if val == '':
+            usages = db(res).select(orderby=~db.usage.date,limitby=(0, 10))
+        else:
+            usages = db(res).select(val,orderby=~db.usage.date,limitby=(0, 10))
+        return dict(usages=usages)        
     def POST(*args,**vars):
-        usage_data_json = request.body.read()
+        usage_data_json=json.loads(request.body.read(), object_hook=json_util.object_hook)
         usage_id = db.usage.bulk_insert([usage_data_json])
-        return dict(usage_id=usage_id)
+        return dict(usages=usage_id)
         
     #~ def PUT(*args,**vars):
         #~ return dict(message=BEAUTIFY(request))
