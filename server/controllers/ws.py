@@ -1,6 +1,5 @@
-from bson import json_util
 from bson.objectid import ObjectId
-import json
+import bson
 
 def list2imbricatedHash(l,value):
     h = dict()
@@ -26,21 +25,15 @@ def usage():
         return dict(usages=usages)
 
     def POST(*args,**vars):
-        msg=''
-        update_data_json=''
-        update_target=''
         if len(args):
-            #~ usage_data_json=json.loads(request.body.read(), object_hook=json_util.object_hook)
-            usage_data_json=request.body.read()
+            usage_data=request.body.read().decode()
             if len(args)>1:
-                args_l = list(args)
-                args_l.pop(0)
-                update_target = list2imbricatedHash(args_l,usage_data_json)
-            usage_id = mc_usage.update({"_id": ObjectId(args[0])}, {"$set":  update_target})
+                usage_data = list2imbricatedHash(list(args).pop(0),usage_data)
+            usage_id = mc_usage.update({"_id": ObjectId(args[0])}, {"$set":  usage_data})
         else:
-            usage_data_json=json.loads(request.body.read(), object_hook=json_util.object_hook)
-            usage_id = mc_usage.bulk_insert([usage_data_json])
-        return dict(msg=update_target,body=usage_data_json,args=args)
+            usage_data_bson=request.body.read().decode()
+            usage_id = mc_usage.bulk_insert([usage_data])
+        return dict(body=usage_data)
     return dict(GET=GET,POST=POST)
 
 #~ @request.restful()
