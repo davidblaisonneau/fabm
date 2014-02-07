@@ -28,17 +28,19 @@ def usage():
     def POST(*args,**vars):
         msg=''
         update_data_json=''
+        update_target=''
         if len(args):
-            usage_data_json=json.loads(request.body.read(), object_hook=json_util.object_hook)
+            #~ usage_data_json=json.loads(request.body.read(), object_hook=json_util.object_hook)
+            usage_data_json=request.body.read()
             if len(args)>1:
                 args_l = list(args)
                 args_l.pop(0)
                 update_target = list2imbricatedHash(args_l,usage_data_json)
-            usage_id = db.usage.update({"_id": args[0]}, {"$set":  {"toto": "AAAA"}})
+            usage_id = mc_usage.update({"_id": ObjectId(args[0])}, {"$set":  update_target})
         else:
             usage_data_json=json.loads(request.body.read(), object_hook=json_util.object_hook)
-            usage_id = db.usage.bulk_insert([usage_data_json])
-        return dict(msg=update_target,body=usage_data_json)
+            usage_id = mc_usage.bulk_insert([usage_data_json])
+        return dict(msg=update_target,body=usage_data_json,args=args)
     return dict(GET=GET,POST=POST)
 
 #~ @request.restful()
