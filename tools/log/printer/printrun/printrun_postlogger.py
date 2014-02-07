@@ -13,8 +13,9 @@ import logging
 #~ Params
 logFile = 'log.txt'
 ws={}
-ws['server']= "localhost:8000"
-ws['url']= "/fabm/ws/usage"
+ws['server']= "127.0.0.1:8000"
+#~ ws['server']= "192.168.3.132:8000"
+ws['url']= "/fabm/ws/usage.json"
 
 #~ =====================================================================
 
