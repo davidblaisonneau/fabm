@@ -1,5 +1,7 @@
 from bson.objectid import ObjectId
-import bson
+import datetime
+import json
+from bson import json_util
 
 def list2imbricatedHash(l,value):
     h = dict()
@@ -9,7 +11,13 @@ def list2imbricatedHash(l,value):
     else:
          h[e] = list2imbricatedHash(l,value)
     return h
-    
+
+def epoch2date(dic):
+    if dic.has_key('epoch'):
+        dic['date'] = datetime.datetime.fromtimestamp(dic['epoch'])
+        dic.pop("epoch", None)
+    return dic
+
 @request.restful()
 def usage():
     mc_usage = mdb.usage
@@ -25,31 +33,16 @@ def usage():
         return dict(usages=usages)
 
     def POST(*args,**vars):
+        usage_data = epoch2date(json.loads(request.body.read(), object_hook=json_util.object_hook))
         if len(args):
-            usage_data=request.body.read().decode()
             if len(args)>1:
                 usage_data = list2imbricatedHash(list(args).pop(0),usage_data)
             usage_id = mc_usage.update({"_id": ObjectId(args[0])}, {"$set":  usage_data})
         else:
-            usage_data_bson=request.body.read().decode()
-            usage_id = mc_usage.bulk_insert([usage_data])
-        return dict(body=usage_data)
+            if not usage_data.has_key('user'):
+                usage_data['user']=""
+            if not usage_data.has_key('fabmanager'):
+                usage_data['fabmanager']=""
+            usage_id = mc_usage.insert(usage_data)
+        return dict(body=str(usage_id))
     return dict(GET=GET,POST=POST)
-
-#~ @request.restful()
-#~ def usage():        
-    #~ def GET(id = 0,val=""):
-        #~ res = db.usage if id==0 else db.usage.id==id
-        #~ if val == '':
-            #~ usages = db(res).select(orderby=~db.usage.date,limitby=(0, 10))
-        #~ else:
-            #~ usages = db(res).select(val,orderby=~db.usage.date,limitby=(0, 10))
-        #~ return dict(usages=usages)        
-    #~ def POST(*args,**vars):
-        #~ usage_data_json=json.loads(request.body.read(), object_hook=json_util.object_hook)
-        #~ usage_id = db.usage.bulk_insert([usage_data_json])
-        #~ return dict(usages=usage_id)
-        #~ 
-    #~ return dict(GET=GET,
-                #~ POST=POST,
-                #~ )

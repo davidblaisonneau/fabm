@@ -5,8 +5,7 @@ import errno
 from socket import error as socket_error
 import httplib, urllib
 import json
-from bson import json_util
-import datetime
+import time
 import pprint
 import logging
 
@@ -39,13 +38,17 @@ else:
 #~ Required data
 stats = {}
 stats['logType'] = '3Dprinter'
-stats['date'] = datetime.datetime.utcnow()
+stats['epoch'] = time.time()
 stats['tool'] = sys.argv[1]
 
 #~ Optional data
 stats['object'] = {}
 stats['material_quantity'] = 0
-stats['duration'] = sys.argv[2]
+if ':' in sys.argv[2]:
+    dur_ext = sys.argv[2].split(':')
+    stats['duration'] = int(dur_ext[0])*60*60+int(dur_ext[1])*60+int(dur_ext[2])
+else:
+    stats['duration'] = sys.argv[2]
 
 #~ Check if it is an error or not
 if stats['duration'] == "-1":
@@ -82,7 +85,7 @@ headers = {"Content-type": "application/x-www-form-urlencoded",
            "Accept": "text/plain"}
 try:
     conn = httplib.HTTPConnection(ws['server'])
-    conn.request("POST", ws['url'], json.dumps(stats, default=json_util.default), headers)
+    conn.request("POST", ws['url'], json.dumps(stats), headers)
     logging.info('Data sent to '+ws['server']+ws['url'])
     response = conn.getresponse()
     print response.read()

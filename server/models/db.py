@@ -9,21 +9,10 @@
 ## be redirected to HTTPS, uncomment the line below:
 # request.requires_https()
 
-if not request.env.web2py_runtime_gae:
-    ## if NOT running on Google App Engine use SQLite or other DB
-    #~ db = DAL('sqlite://storage.sqlite',pool_size=1,check_reserved=['all'])
-    db = DAL("mongodb://localhost:27017/fablab",
-        check_reserved=["mongodb_nonreserved",],
-        adapter_args={"safe":False})
-else:
-    ## connect to Google BigTable (optional 'google:datastore://namespace')
-    db = DAL('google:datastore')
-    ## store sessions and tickets there
-    session.connect(request, response, db=db)
-    ## or store session in Memcache, Redis, etc.
-    ## from gluon.contrib.memdb import MEMDB
-    ## from google.appengine.api.memcache import Client
-    ## session.connect(request, response, db = MEMDB(Client()))
+db = DAL("mongodb://localhost:27017/fablab",
+    check_reserved=["mongodb_nonreserved",],
+    adapter_args={"safe":False})
+
 
 ## by default give a view/generic.extension to all actions from localhost
 ## none otherwise. a pattern can be 'controller/function.extension'
@@ -93,6 +82,15 @@ db.define_table('usage',
         Field('object','json'),
         Field('result','text'),
         Field('tool','text'),
+    )
+
+db.define_table('objects',
+        Field('title','text'),
+        Field('type','text'),
+        Field('available','text'),
+        Field('owner','text'),
+        Field('details','json'),
+        Field('history','json')
     )
 
 #~ Field('## after defining tables, uncomment below to enable auditing
