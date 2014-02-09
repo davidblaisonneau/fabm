@@ -72,6 +72,7 @@ use_janrain(auth, filename='private/janrain.key')
 ## >>> for row in rows: print row.id, row.myfield
 #########################################################################
 
+# Usage Table
 db.define_table('usage',
         Field('date','datetime'),
         Field('fabmanager','text'),
@@ -84,6 +85,7 @@ db.define_table('usage',
         Field('tool','text'),
     )
 
+# Objects table
 db.define_table('objects',
         Field('title','text'),
         Field('type','text'),
