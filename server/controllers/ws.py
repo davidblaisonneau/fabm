@@ -1,7 +1,9 @@
-from bson.objectid import ObjectId
 import datetime
+import time
 import json
 from bson import json_util
+from bson.objectid import ObjectId
+import re
 
 def list2imbricatedHash(l,value):
     h = dict()
@@ -12,28 +14,63 @@ def list2imbricatedHash(l,value):
          h[e] = list2imbricatedHash(l,value)
     return h
 
-def epoch2date(dic):
-    if dic.has_key('epoch'):
-        dic['date'] = datetime.datetime.fromtimestamp(dic['epoch'])
-        dic.pop("epoch", None)
+#~ date2Datetime (dict)
+#~      return a dict where date is translated to datetime
+def date2Datetime(dic,field='date'):
+    if dic.has_key(field):
+        #~ We have an epoch
+        if re.match('^[\d\.]+$',dic[field]):
+            dic[field] = datetime.datetime.fromtimestamp(dic[field])
+        elif re.match('^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.?.*$',dic[field]):
+            dic[field] = datetime.datetime.strptime(dic[field].split('.')[0], "%Y-%m-%d %H:%M:%S")
     return dic
+    
+def serializeMongo(rows):
+    #~ Recursive parse
+    if type(rows) is list:
+        ret_rows=[]
+        for row in rows:
+            ret_rows.append(serializeMongo(row))
+        return ret_rows
+    else :
+        #~ Set ObjectId to str
+        if rows.has_key('_id'):
+            rows['_id'] = str(rows['_id'])
+        return rows
 
+def dateRangeSetForMongo(dic):
+    if dic.has_key('start') and dic.has_key('end') :
+        dic=date2Datetime(dic,'start')
+        dic=date2Datetime(dic,'end')
+        dic['date']={'$gte':dic['start'],'$lte':dic['end']}
+        dic.pop("start", None)
+        dic.pop("end", None)
+    return dic
+    
 @request.restful()
 def usage():
     mc_usage = mdb.usage
     def GET(*args,**vars):
+        #~ search by date
+        try: vars=dateRangeSetForMongo(vars)
+        except: raise HTTP(400, "Error, probably wrong date")
+        #~ If we have arguments, we require sub items, the id is the first argument
         if len(args):
             usages = mc_usage.find_one({"_id": ObjectId(args[0])})
-            if len(args)>1:
+            if usages is None: raise HTTP(404,"No such usage id")
+            if len(args)>1: 
                 for i in range(1,len(args)):
                     usages=usages[args[i]]
+        #~ Else we return items list
         else:
-            usage_list = mc_usage.find().sort([('date',-1)]).limit(100)
+            usage_list = mc_usage.find(vars).sort([('date',-1)]).limit(100)
             usages = list(usage_list)
+        usages = serializeMongo(usages)
         return dict(usages=usages)
 
     def POST(*args,**vars):
-        usage_data = epoch2date(json.loads(request.body.read(), object_hook=json_util.object_hook))
+        try: usage_data = date2Datetime(json.loads(request.body.read(), object_hook=json_util.object_hook))
+        except: raise HTTP(400, "Error, probably wrong date")
         if len(args):
             if len(args)>1:
                 usage_data = list2imbricatedHash(list(args).pop(0),usage_data)

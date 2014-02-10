@@ -38,7 +38,7 @@ else:
 #~ Required data
 stats = {}
 stats['logType'] = '3Dprinter'
-stats['epoch'] = time.time()
+stats['date'] = time.time()
 stats['tool'] = sys.argv[1]
 
 #~ Optional data
