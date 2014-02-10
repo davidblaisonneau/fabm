@@ -48,7 +48,7 @@ if ':' in sys.argv[2]:
     dur_ext = sys.argv[2].split(':')
     stats['duration'] = int(dur_ext[0])*60*60+int(dur_ext[1])*60+int(dur_ext[2])
 else:
-    stats['duration'] = sys.argv[2]
+    stats['duration'] = int(sys.argv[2])
 
 #~ Check if it is an error or not
 if stats['duration'] == "-1":
@@ -63,7 +63,8 @@ else:
     
     #~ Parse gcode data
     lines = []
-    pattern = re.compile(r'^; (.+) = ([^ ]+)( \((.+)\))?\n')
+    pattern = re.compile(r'^; (.+) = ([^ ]+)( \((\d+.?\d*)cm3\))?\n')
+    pattern_mm = re.compile(r'^(\d+.?\d*)([cm]m3?)?$')
     for line in open(stats['object']['file'], 'r'):
         if re.search('^;', line):
             if line == None:
@@ -72,11 +73,14 @@ else:
             else:
                 if re.search('^; generated', line):
                     stats['object']['gcode-generation']=line.strip("\n; ")
-                elif re.search('=', line):
+                elif '=' in line:
                     match = pattern.match(line)
-                    stats['object'][match.group(1).replace(' ','_')]=match.group(2)
+                    val = match.group(2)
+                    match_mm = pattern_mm.match(val)
+                    if match_mm: val=float(match_mm.group(1))
+                    stats['object'][match.group(1).replace(' ','_')]=val
                     if match.group(3) and match.group(1) == 'filament used':
-                        stats['material_quantity']=match.group(4)
+                        stats['material_quantity']=float(match.group(4))
     logging.debug('GCode parsed')
     logging.info(pprint.pformat(stats))
 

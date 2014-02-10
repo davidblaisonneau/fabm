@@ -19,7 +19,7 @@ def list2imbricatedHash(l,value):
 def date2Datetime(dic,field='date'):
     if dic.has_key(field):
         #~ We have an epoch
-        if re.match('^[\d\.]+$',dic[field]):
+        if re.match('^\d+\.?\d*$',str(dic[field])):
             dic[field] = datetime.datetime.fromtimestamp(dic[field])
         elif re.match('^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.?.*$',dic[field]):
             dic[field] = datetime.datetime.strptime(dic[field].split('.')[0], "%Y-%m-%d %H:%M:%S")
@@ -39,20 +39,29 @@ def serializeMongo(rows):
         return rows
 
 def dateRangeSetForMongo(dic):
-    if dic.has_key('start') and dic.has_key('end') :
-        dic=date2Datetime(dic,'start')
-        dic=date2Datetime(dic,'end')
-        dic['date']={'$gte':dic['start'],'$lte':dic['end']}
-        dic.pop("start", None)
-        dic.pop("end", None)
     return dic
+  
+def parseVars(data):
+    if type(data) is dict:
+        data = date2Datetime(data)
+        if dic.has_key('start') and dic.has_key('end') :
+            dic=date2Datetime(dic,'start')
+            dic=date2Datetime(dic,'end')
+            dic['date']={'$gte':dic['start'],'$lte':dic['end']}
+            dic.pop("start", None)
+            dic.pop("end", None)
+        #~ for k,v in data.items():
+            #~ if re.search("^int\((\d+)\)",v)
+    return data
     
+
 @request.restful()
 def usage():
     mc_usage = mdb.usage
     def GET(*args,**vars):
-        #~ search by date
-        try: vars=dateRangeSetForMongo(vars)
+        #~ transform vars
+        
+        try: vars=parseVars(vars)
         except: raise HTTP(400, "Error, probably wrong date")
         #~ If we have arguments, we require sub items, the id is the first argument
         if len(args):
@@ -66,7 +75,7 @@ def usage():
             usage_list = mc_usage.find(vars).sort([('date',-1)]).limit(100)
             usages = list(usage_list)
         usages = serializeMongo(usages)
-        return dict(usages=usages)
+        return dict(usages=usages,vars=vars)
 
     def POST(*args,**vars):
         try: usage_data = date2Datetime(json.loads(request.body.read(), object_hook=json_util.object_hook))
