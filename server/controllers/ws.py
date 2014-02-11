@@ -8,14 +8,10 @@ import re
 def list2imbricatedHash(l,value):
     h = dict()
     e = l.pop(0)
-    if(len(l) == 0):
-        h[e] = value
-    else:
-         h[e] = list2imbricatedHash(l,value)
+    if(len(l) == 0): h[e] = value
+    else: h[e] = list2imbricatedHash(l,value)
     return h
 
-#~ date2Datetime (dict)
-#~      return a dict where date is translated to datetime
 def date2Datetime(dic,field='date'):
     if dic.has_key(field):
         #~ We have an epoch
@@ -38,20 +34,25 @@ def serializeMongo(rows):
             rows['_id'] = str(rows['_id'])
         return rows
 
-def dateRangeSetForMongo(dic):
-    return dic
-  
 def parseVars(data):
     if type(data) is dict:
+        reInt=re.compile("^\d+")
+        reFloat=re.compile("^\d+.\d+")
+        reForceString=re.compile("^['\"](.*)['\"]$")
         data = date2Datetime(data)
-        if dic.has_key('start') and dic.has_key('end') :
-            dic=date2Datetime(dic,'start')
-            dic=date2Datetime(dic,'end')
-            dic['date']={'$gte':dic['start'],'$lte':dic['end']}
-            dic.pop("start", None)
-            dic.pop("end", None)
-        #~ for k,v in data.items():
-            #~ if re.search("^int\((\d+)\)",v)
+        if data.has_key('start') and data.has_key('end') :
+            data=date2Datetime(data,'start')
+            data=date2Datetime(data,'end')
+            data['date']={'$gte':data['start'],'$lte':data['end']}
+            data.pop("start", None)
+            data.pop("end", None)
+        for k,v in data.items():
+            if type(v) is str:
+                if reInt.match(v): data[k]=int(v)
+                elif reFloat.match(v): data[k]=float(v)
+                elif reForceString.match(v):
+                    m = reForceString.search(v)
+                    data[k]=m.group(1)
     return data
     
 
@@ -60,9 +61,9 @@ def usage():
     mc_usage = mdb.usage
     def GET(*args,**vars):
         #~ transform vars
-        
-        try: vars=parseVars(vars)
-        except: raise HTTP(400, "Error, probably wrong date")
+        #~ try:
+        vars=parseVars(vars)
+        #~ except: raise HTTP(400, "Error, probably wrong date2")
         #~ If we have arguments, we require sub items, the id is the first argument
         if len(args):
             usages = mc_usage.find_one({"_id": ObjectId(args[0])})
