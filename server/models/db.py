@@ -44,6 +44,15 @@ from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
 auth = Auth(db)
 crud, service, plugins = Crud(db), Service(), PluginManager()
 
+## Set auth relies on OpenID
+from gluon.contrib.login_methods.rpx_account import RPXAccount
+auth.settings.actions_disabled=['register','change_password','request_reset_password']
+auth.settings.login_form = RPXAccount(request,
+    api_key='7295d4050e03eb4198842acce50a1ab11f4dde59',
+    domain='fablab-lannion',
+    url = "http://localhost:8000/fabm/default/user/login" )
+    #~ url = "http://localhost:8000/%s/default/user/login" % request.application)
+
 ## create all tables needed by auth if not custom tables
 auth.define_tables(username=False, signature=False)
 
