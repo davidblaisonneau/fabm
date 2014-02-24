@@ -119,4 +119,15 @@
 'You are successfully running web2py': 'You are successfully running web2py',
 'You can modify this application and adapt it to your needs': 'You can modify this application and adapt it to your needs',
 'You visited the url %s': 'You visited the url %s',
+#~ ####################################################################
+'Users': 'Users',
+'Machines': 'Machines',
+'Consumables': 'Consumables',
+'Usages': 'Usages ',
+'Badges': 'Badges',
+'Pictures': 'Pictures',
+'Logs': 'Logs',
+'super user': 'super user',
+'operator': 'operator',
+'administrator': 'administrator',
 }

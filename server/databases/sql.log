@@ -53,3 +53,565 @@ CREATE TABLE auth_cas(
     renew CHAR(1)
 );
 success!
+timestamp: 2014-02-22T23:28:04.990336
+ALTER TABLE auth_user ADD member_end_date DATE;
+timestamp: 2014-02-22T23:28:05.194188
+ALTER TABLE auth_user ADD um_balance DOUBLE;
+timestamp: 2014-02-22T23:28:05.343982
+ALTER TABLE auth_user ADD diffusion_photo CHAR(1);
+timestamp: 2014-02-22T23:28:05.478007
+ALTER TABLE auth_user ADD phone CHAR(512);
+timestamp: 2014-02-22T23:28:05.622289
+ALTER TABLE auth_user ADD avatar CHAR(512);
+timestamp: 2014-02-22T23:28:05.807089
+ALTER TABLE auth_user ADD address CHAR(512);
+timestamp: 2014-02-22T23:28:05.960318
+ALTER TABLE auth_user ADD badges TEXT;
+timestamp: 2014-02-22T23:28:06.145072
+ALTER TABLE auth_user ADD history TEXT;
+success!
+success!
+success!
+success!
+success!
+timestamp: 2014-02-22T23:44:01.594619
+ALTER TABLE auth_user ADD city CHAR(512);
+timestamp: 2014-02-22T23:44:01.758562
+ALTER TABLE auth_user ADD zip_code CHAR(512);
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+timestamp: 2014-02-23T01:01:13.125859
+CREATE TABLE machines(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    machine_id CHAR(required),
+    machine_description TEXT,
+    place CHAR(512),
+    photos TEXT,
+    status CHAR(512),
+    required_badges TEXT,
+    usages TEXT,
+    reservation_list TEXT,
+    events TEXT,
+    consumables TEXT,
+    price_per_unit DOUBLE,
+    unit_type CHAR(512)
+);
+success!
+timestamp: 2014-02-23T01:01:37.373569
+CREATE TABLE machines(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    machine_id CHAR(512),
+    machine_description TEXT,
+    place CHAR(512),
+    photos TEXT,
+    status CHAR(512),
+    required_badges TEXT,
+    usages TEXT,
+    reservation_list TEXT,
+    events TEXT,
+    consumables TEXT,
+    price_per_unit DOUBLE,
+    unit_type CHAR(512)
+);
+success!
+success!
+success!
+success!
+success!
+timestamp: 2014-02-23T01:04:36.812111
+CREATE TABLE photos(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    photo CHAR(512)
+);
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+timestamp: 2014-02-23T01:17:36.258033
+CREATE TABLE reservations(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    start_date TIMESTAMP,
+    stop_date TIMESTAMP,
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE,
+    validated_by INTEGER REFERENCES auth_user (id) ON DELETE CASCADE,
+    events TEXT,
+    machine INTEGER REFERENCES machines (id) ON DELETE CASCADE
+);
+success!
+success!
+success!
+success!
+timestamp: 2014-02-23T01:19:29.876032
+CREATE TABLE usages(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    machine INTEGER REFERENCES machines (id) ON DELETE CASCADE,
+    usage_date TIMESTAMP,
+    usage_message CHAR(512),
+    price DOUBLE,
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE,
+    fabmanager INTEGER REFERENCES auth_user (id) ON DELETE CASCADE,
+    details TEXT
+);
+success!
+success!
+timestamp: 2014-02-23T01:19:53.962726
+CREATE TABLE events(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_date TIMESTAMP,
+    event_message CHAR(512),
+    event_type CHAR(512),
+    user_id CHAR(512)
+);
+success!
+success!
+success!
+timestamp: 2014-02-23T01:21:36.200982
+CREATE TABLE consumables(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name CHAR(512),
+    quantity INTEGER,
+    consumable_location CHAR(512),
+    events TEXT
+);
+success!
+success!
+timestamp: 2014-02-23T01:21:53.022453
+CREATE TABLE badges(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    badge_type CHAR(512),
+    badge_level INTEGER,
+    icon CHAR(512)
+);
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+timestamp: 2014-02-23T21:37:58.037481
+CREATE TABLE pictures(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pictures CHAR(512)
+);
+success!
+success!
+timestamp: 2014-02-23T21:40:20.208420
+ALTER TABLE machines ADD pictures TEXT;
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!

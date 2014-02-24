@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 
 #########################################################################
 ## This scaffolding model makes your app work on Google App Engine too
@@ -44,17 +45,23 @@ from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
 auth = Auth(db)
 crud, service, plugins = Crud(db), Service(), PluginManager()
 
-## Set auth relies on OpenID
-from gluon.contrib.login_methods.rpx_account import RPXAccount
-auth.settings.actions_disabled=['register','change_password','request_reset_password']
-auth.settings.login_form = RPXAccount(request,
-    api_key='7295d4050e03eb4198842acce50a1ab11f4dde59',
-    domain='fablab-lannion',
-    url = "http://localhost:8000/fabm/default/user/login" )
-    #~ url = "http://localhost:8000/%s/default/user/login" % request.application)
-
 ## create all tables needed by auth if not custom tables
+auth.settings.extra_fields['auth_user']= [
+    Field('phone', 'string'),
+    Field('address', 'string'),
+    Field('zip_code', 'string'),
+    Field('city', 'string'),
+    Field('avatar', 'upload', default='', uploadfolder=os.path.join(request.folder,'static/avatar')),
+    Field('history', 'list:reference history',writable=False),
+    Field('badges', 'list:reference badges', writable=False),
+    Field('UM_balance', 'float', writable=False, default=0.0),
+    Field('member_end_date', 'date',writable=False),
+    Field('diffusion_photo', 'boolean', default=True)]
 auth.define_tables(username=False, signature=False)
+
+## Check Fabmanager table exists
+if not db.auth_group(role='Fab Manager'):
+    db.auth_group.insert(role='Fab Manager',description='Fab Manager')
 
 ## configure email
 mail = auth.settings.mailer
@@ -89,5 +96,5 @@ use_janrain(auth, filename='private/janrain.key')
 ## >>> for row in rows: print row.id, row.myfield
 #########################################################################
 
-#~ Field('## after defining tables, uncomment below to enable auditing
+## after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)

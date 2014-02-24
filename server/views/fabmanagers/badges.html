@@ -1,0 +1,16 @@
+{{ left_sidebar_enabled, right_sidebar_enabled = False, ('message' in globals()) }}
+{{extend 'layout.html'}}
+{{=H3(T("Badges"))}}
+<table>
+{{for badge in badges:}}
+    <span  style="display: inline-block">
+    <figure style='width:120px;text-align:center'>
+        {{caption=CAT('[',badge.id,'] ',badge.badge_type,' / ',T(badge.badge_level))}}
+        <img src='/fabm/static/badges/{{=badge.icon}}' alt='{{=caption}}'/>
+        <figcaption>{{=caption}}</figcaption>
+    </figure>
+    </span>
+{{pass}}
+<hr/>
+{{=form}}
+</table>
