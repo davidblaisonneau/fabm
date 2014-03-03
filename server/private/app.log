@@ -1,10 +1,2 @@
-2014-02-24 00:46:02,373 DEBUG 3073 140392305161984 get_configured_logger():22 fabm already exists
-2014-02-24 00:46:07,047 DEBUG 3073 140392305161984 get_configured_logger():22 fabm already exists
-2014-02-24 00:46:07,396 DEBUG 3073 140392305161984 get_configured_logger():22 fabm already exists
-2014-02-24 00:46:12,493 DEBUG 3073 140392305161984 get_configured_logger():22 fabm already exists
-2014-02-24 00:46:13,022 DEBUG 3073 140392305161984 get_configured_logger():22 fabm already exists
-2014-02-24 00:46:17,679 DEBUG 3073 140392305161984 get_configured_logger():22 fabm already exists
-2014-02-24 00:46:18,104 DEBUG 3073 140392305161984 get_configured_logger():22 fabm already exists
-2014-02-24 00:46:43,921 DEBUG 3073 140392313554688 get_configured_logger():22 fabm already exists
-2014-02-24 00:46:52,178 DEBUG 3073 140392079030016 get_configured_logger():22 fabm already exists
-2014-02-24 00:49:01,902 DEBUG 3073 140392062244608 get_configured_logger():22 fabm already exists
+2014-03-03 01:26:46,562 DEBUG 7042 139780834711296 get_configured_logger():22 fabm already exists
+2014-03-03 01:26:46,850 DEBUG 7042 139780834711296 get_configured_logger():22 fabm already exists

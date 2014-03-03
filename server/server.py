@@ -27,7 +27,7 @@ class Application(tornado.web.Application):
         handlers = [
             (r"/", IndexHandler),
             (r"/upload", UploadHandler),
-            (r"/ws/usage/(.*)", FabMUsage),
+            (r"/fabmanagers/badges(.*)", FabMUsage),
             (r"/angularjs/(.*)",tornado.web.StaticFileHandler, {"path": "./angularjs"},),
             (r"/static/(.*)",tornado.web.StaticFileHandler, {"path": "./static"},),
             (r"/lib/(.*)",tornado.web.StaticFileHandler, {"path": "./lib"},),
