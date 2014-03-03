@@ -1,3 +1,6 @@
+from event import Event
+from fabuser import Fabuser
+
 response.menu = [[T('Users'), False, URL('users')],
                  [T('Machines'), False, URL('machines')],
                  [T('Consumables'), False, URL('consumables')],
@@ -14,17 +17,8 @@ def index():
     
 @auth.requires(auth.has_membership(role='Fab Manager'))
 def users():
-    db.auth_user._singular = "User"
-    db.auth_user._plural = "Users"
-    grid = SQLFORM.smartgrid(db.auth_user,
-                                linked_tables=['badges',],
-                                searchable= dict(parent=True, child=True),
-                                create=False, 
-                                editable = auth.has_membership(role='Fab Manager'),
-                                deletable = auth.has_membership(role='Fab Manager'),
-                                showbuttontext=False,
-                            )
-    return locals()
+    fabuser = Fabuser(db.auth_user,db.auth_membership,auth)
+    return fabuser.get_grid()
 
 @auth.requires(auth.has_membership(role='Fab Manager'))
 def machines():
@@ -55,21 +49,8 @@ def usages():
 
 @auth.requires(auth.has_membership(role='Fab Manager'))
 def logs():
-    query=((db.events))
-    fields = (db.events.id, db.events.event_date, db.events.event_message, db.events.event_type, db.events.user_id)
-    headers = {'events.id':   'ID',
-           'events.event_date': 'Date',
-           'events.event_message': 'Message',
-           'events.event_type': 'Type',
-           'events.user_id': 'User' }
-    default_sort_order=[db.events.id]
-    form = SQLFORM.grid(query=query,
-                        fields=fields,
-                        headers=headers,
-                        orderby=default_sort_order,
-                        showbuttontext=False,
-                        create=False, deletable=False, editable=False)
-    return dict(form=form)
+    event = Event()
+    return dict(form=event.get_grid())
 
 @auth.requires(auth.has_membership(role='Fab Manager'))
 def consumables():
@@ -123,3 +104,4 @@ def pictures():
     form = SQLFORM.grid(query=query, fields=fields, headers=headers, orderby=default_sort_order,
             create=True, deletable=True, editable=True, paginate=25,showbuttontext=False,)
     return dict(form=form)
+
