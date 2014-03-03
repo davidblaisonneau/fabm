@@ -150,6 +150,7 @@
 'Live chat': 'Chat en direct',
 'Live Chat': 'Chat en direct',
 'Logged in': 'Logged in',
+'Logged out': 'Logged out',
 'login': 'connectez-vous',
 'Login': 'Connectez-vous',
 'logout': 'déconnectez-vous',
