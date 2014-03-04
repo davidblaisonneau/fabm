@@ -1,8 +1,9 @@
 from gluon import current
-current.auth = auth
 from fabuser import Fabuser
+from event import Event
 
 def index():
-    fabuser = Fabuser()
-    fabuser.get_user(1)
-    return dict(fabuser.auth_user)
+    fabuser = Fabuser(db,auth)
+    user = fabuser.get_user(12)
+    fabuser.set_fabmanager()
+    return dict(fabuser=fabuser.user.history)

@@ -66,10 +66,10 @@ I00
 sg6
 I3
 sg7
-S'TIMESTAMP NOT NULL'
+S'TIMESTAMP'
 p22
 sg9
-I01
+I00
 sg10
 S'datetime'
 p23

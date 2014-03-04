@@ -9,15 +9,15 @@ from gluon.sqlhtml import SQLFORM
 class Event(object):
     """Build an Event object"""
     
-    def __init__(self):
-        self.events = current.db.events
+    def __init__(self,db):
+        self.events = db.events
         self.request = current.request
         self.session = current.session
 
     def add(self,msg,m_type='log',user_id=None):
-        if user_id==None and self.session.user.id!=None:
-            user_id = self.session.user.id 
-        self.events.insert(
+        if user_id==None and self.session.auth.user.id!=None:
+            user_id = self.session.auth.user.id
+        return self.events.insert(
             event_date = self.request.now,
             event_message = msg,
             event_type = m_type,

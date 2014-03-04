@@ -169,32 +169,9 @@ sg9
 I00
 sg10
 g11
-ssS'photos'
+ssS'place'
 p42
 (dp43
-S'sortable'
-p44
-I5
-sS'sql'
-p45
-S'TEXT'
-p46
-sS'length'
-p47
-I512
-sS'notnull'
-p48
-I00
-sS'unique'
-p49
-I00
-sS'type'
-p50
-S'list:reference photos'
-p51
-ssS'place'
-p52
-(dp53
 g4
 I512
 sg5
@@ -203,14 +180,14 @@ sg6
 I4
 sg7
 S'CHAR(512) NOT NULL'
-p54
+p44
 sg9
 I01
 sg10
 g11
 ssS'machine_id'
-p55
-(dp56
+p45
+(dp46
 g4
 I512
 sg5
@@ -219,14 +196,14 @@ sg6
 I2
 sg7
 S'CHAR(512) NOT NULL'
-p57
+p47
 sg9
 I01
 sg10
 g11
 ssS'id'
-p58
-(dp59
+p48
+(dp49
 g4
 I512
 sg5
@@ -235,10 +212,9 @@ sg6
 I1
 sg7
 S'INTEGER PRIMARY KEY AUTOINCREMENT'
-p60
+p50
 sg9
 I00
 sg10
-S'id'
-p61
+g48
 ss.

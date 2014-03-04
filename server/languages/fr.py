@@ -262,6 +262,8 @@
 'This is a copy of the scaffolding application': "Ceci est une copie de l'application échafaudage",
 'Time in Cache (h:m:s)': 'Temps en Cache (h:m:s)',
 'Timestamp': 'Horodatage',
+'Too short': 'Too short',
+'Traceback': 'Traceback',
 'TSV (Excel compatible)': 'TSV (Excel compatible)',
 'TSV (Excel compatible, hidden cols)': 'TSV (Excel compatible, hidden cols)',
 'Twitter': 'Twitter',

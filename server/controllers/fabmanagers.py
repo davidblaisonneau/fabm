@@ -18,7 +18,7 @@ def index():
     
 @auth.requires(auth.has_membership(role='Fab Manager'))
 def users():
-    fabuser = Fabuser(db.auth_user,db.auth_membership,auth)
+    fabuser = Fabuser(db,auth)
     return fabuser.get_grid()
 
 @auth.requires(auth.has_membership(role='Fab Manager'))
@@ -50,7 +50,7 @@ def usages():
 
 @auth.requires(auth.has_membership(role='Fab Manager'))
 def logs():
-    event = Event()
+    event = Event(db)
     return dict(form=event.get_grid())
 
 @auth.requires(auth.has_membership(role='Fab Manager'))

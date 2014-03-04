@@ -32,7 +32,7 @@ db.define_table(
 db.define_table(
     'usages',
     Field('machine', db.machines, notnull=True),
-    Field('usage_date', 'datetime', notnull=True),
+    Field('usage_date', 'datetime', default=request.now),
     Field('usage_message', 'string', notnull=True),
     Field('price', 'float', notnull=True),
     Field('user_id', db.auth_user, notnull=True),
@@ -42,7 +42,7 @@ db.define_table(
 
 db.define_table(
     'events',
-    Field('event_date', 'datetime', notnull=True),
+    Field('event_date', 'datetime', default=request.now),
     Field('event_message', 'string', notnull=True),
     Field('event_type',  requires = IS_IN_SET(['log', 'message']), notnull=True),
     Field('user_id', 'string', notnull=True),
