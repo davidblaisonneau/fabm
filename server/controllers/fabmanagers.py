@@ -1,4 +1,5 @@
 from event import Event
+current.auth = auth
 from fabuser import Fabuser
 
 response.menu = [[T('Users'), False, URL('users')],

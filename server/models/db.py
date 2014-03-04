@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+from gluon import current
 
 #########################################################################
 ## This scaffolding model makes your app work on Google App Engine too
@@ -22,6 +23,10 @@ else:
     ## from gluon.contrib.memdb import MEMDB
     ## from google.appengine.api.memcache import Client
     ## session.connect(request, response, db = MEMDB(Client()))
+
+## Export to current for an easy access from modules
+current.db = db
+
 
 ## by default give a view/generic.extension to all actions from localhost
 ## none otherwise. a pattern can be 'controller/function.extension'
