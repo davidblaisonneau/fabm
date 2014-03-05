@@ -137,3 +137,16 @@ CREATE TABLE badges(
 success!
 success!
 success!
+timestamp: 2014-03-05T16:41:15.532935
+CREATE TABLE tag(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name CHAR(512)
+);
+success!
+timestamp: 2014-03-05T16:41:15.700396
+CREATE TABLE product(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name CHAR(512),
+    tags TEXT
+);
+success!

@@ -55,12 +55,12 @@ class Fabuser(object):
         if enable:
             """Add to FabManager group"""
             result = self.db.auth_membership.update_or_insert(user_id=self.user_id,group_id=self.fabmanager_group_id)
-            self.push_event("User '"+self.user.first_name+" "+self.user.last_name+" is set in Fab Manager group :: "+str(result))
+            event = self.push_event("User '"+self.user.first_name+" "+self.user.last_name+" is set in Fab Manager group :: "+str(result))
         else:
             """Remove from FabManger group"""
             result = self.db((self.db.auth_membership.user_id==self.user_id)&(self.db.auth_membership.group_id==self.fabmanager_group_id)).delete()
-            self.push_event("User '"+self.user.first_name+" "+self.user.last_name+" is removed from Fab Manager group :: "+str(result))
-        return result
+            event = self.push_event("User '"+self.user.first_name+" "+self.user.last_name+" is removed from Fab Manager group :: "+str(result))
+        return dict(result=result,event=event)
         
     def get_fabmanager_group_id(self):
         """get_fabmanager_group_id get the Fab Manager group id"""
@@ -72,8 +72,10 @@ class Fabuser(object):
         if self.user==None:
             if self.get_user(user_id)==None:
                 return "Please select user_id"
-        event = Event(self.db)
-        self.user.history=[event.add(msg,m_type)]
-        self.user.update_record()
+        event = Event(self.db).add(msg,m_type)
+        
+        #~ self.user.history=list(event.add(msg,m_type))
+        #~ self.user.update_record()
+        return event
         
         
