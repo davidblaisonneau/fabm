@@ -4,6 +4,7 @@
 from gluon import current
 from gluon.dal import DAL, Field
 from gluon.sqlhtml import SQLFORM
+from event import Event
 
 
 class Fabuser(object):
@@ -17,6 +18,7 @@ class Fabuser(object):
         self.user_id = None
         self.user = None
         self.fabmanager_group_id = None
+        self.event = Event(db)
         
     def get_grid(self):
         """Return a SQLFORM.smartgrid"""
@@ -45,12 +47,14 @@ class Fabuser(object):
             if self.user !=None:
                 self.user_id = user_id
             return self.user
+
+    def is_member(self,user_id=None):
+        """is_member says if user is member or not"""
+        if self.user_not_loaded(user_id): return "Please select user_id"
             
     def set_fabmanager(self,enable=True,user_id=None):
         """set_fabmanager push the user in the fabmanager group (or not)"""
-        if self.user==None:
-            if self.get_user(user_id)==None:
-                return "Please select user_id"
+        if self.user_not_loaded(user_id): return "Please select user_id"
         self.get_fabmanager_group_id()
         if enable:
             """Add to FabManager group"""
@@ -66,16 +70,26 @@ class Fabuser(object):
         """get_fabmanager_group_id get the Fab Manager group id"""
         self.fabmanager_group_id = self.db(self.db.auth_group.role=="Fab Manager").select().first().id
         
-    def push_event(self,msg,m_type='log'):
-        from event import Event
+    def push_event(self,msg,m_type='log',user_id=None):
         """push_event add a event to the user"""
-        if self.user==None:
-            if self.get_user(user_id)==None:
-                return "Please select user_id"
-        event = Event(self.db).add(msg,m_type)
-        
-        #~ self.user.history=list(event.add(msg,m_type))
-        #~ self.user.update_record()
+        if self.user_not_loaded(user_id): return "Please select user_id"
+        event = self.event.add(msg)
+        if self.user.history==None:
+            self.user.history=[event]
+        else:
+            self.user.history.append(event)
+        self.user.update_record()
         return event
         
-        
+    def user_not_loaded(self,user_id):
+        """user_not_loaded return true id user is not loaded"""
+        if self.user==None:
+            if self.get_user(user_id)==None:
+                return True
+        else:
+            return False
+
+    def __exit__(self):
+        """save user before exit"""
+        if self.user!=None:
+            self.user.update_record()

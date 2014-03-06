@@ -32,14 +32,14 @@ I00
 sg6
 I5
 sg7
-S'CHAR(512) NOT NULL'
+S'INTEGER REFERENCES auth_user (id) ON DELETE CASCADE'
 p14
 sg9
-I01
+I00
 sg10
-S'string'
+S'reference auth_user'
 p15
-ssS'id'
+ssS'event_type'
 p16
 (dp17
 g4
@@ -47,14 +47,14 @@ I512
 sg5
 I00
 sg6
-I1
+I4
 sg7
-S'INTEGER PRIMARY KEY AUTOINCREMENT'
+S'CHAR(512) NOT NULL'
 p18
 sg9
-I00
+I01
 sg10
-S'id'
+S'string'
 p19
 ssS'event_message'
 p20
@@ -71,8 +71,8 @@ p22
 sg9
 I01
 sg10
-g15
-ssS'event_type'
+g19
+ssS'id'
 p23
 (dp24
 g4
@@ -80,12 +80,13 @@ I512
 sg5
 I00
 sg6
-I4
+I1
 sg7
-S'CHAR(512) NOT NULL'
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
 p25
 sg9
-I01
+I00
 sg10
-g15
+S'id'
+p26
 ss.

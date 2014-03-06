@@ -57,9 +57,11 @@ auth.settings.extra_fields['auth_user']= [
     Field('zip_code', 'string'),
     Field('city', 'string'),
     Field('avatar', 'upload', default='', uploadfolder=os.path.join(request.folder,'static/avatar')),
-    Field('history', 'list:reference history',writable=False),
+    Field('history', 'list:reference events',writable=False),
     Field('badges', 'list:reference badges', writable=False),
     Field('UM_balance', 'float', writable=False, default=0.0),
+    Field('member_type',  requires = IS_IN_SET(['not_member', 'social', 'individual', 'enterprise', 'employee']), default='not_member', notnull=True),
+    Field('member_parent', 'reference auth_user' ),
     Field('member_end_date', 'date',writable=False),
     Field('diffusion_photo', 'boolean', default=True)]
 auth.define_tables(username=False, signature=False)
@@ -106,4 +108,6 @@ use_janrain(auth, filename='private/janrain.key')
 db.define_table('tag',Field('name'),format='%(name)s')
 db.define_table('product',
     Field('name'),
-    Field('tags','list:reference tag'))
+    Field('tags','list:reference tag'),
+    Field('events','list:reference events')
+    )

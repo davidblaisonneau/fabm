@@ -6,6 +6,7 @@ response.menu = [[T('Users'), False, URL('users')],
                  [T('Machines'), False, URL('machines')],
                  [T('Consumables'), False, URL('consumables')],
                  [T('Usages'), False, URL('usages')],
+                 [T('Reservations'), False, URL('reservations')],
                  [T('Badges'), False, URL('badges')],
                  [T('Pictures'), False, URL('pictures')],
                  [T('Logs'), False, URL('logs')]]
@@ -48,6 +49,20 @@ def usages():
                             )
     return locals()
 
+@auth.requires(auth.has_membership(role='Fab Manager'))
+def reservations():
+    db.reservations._singular = "Reservations"
+    db.reservations._plural = "Réservations"
+    grid = SQLFORM.smartgrid(db.reservations,
+                                linked_tables=['auth_user','event','machines',],
+                                searchable= dict(parent=True, child=True),
+                                create=True, 
+                                editable = auth.has_membership(role='Fab Manager'),
+                                deletable = auth.has_membership(role='Fab Manager'),
+                                showbuttontext=False,
+                            )
+    return locals()
+    
 @auth.requires(auth.has_membership(role='Fab Manager'))
 def logs():
     event = Event(db)

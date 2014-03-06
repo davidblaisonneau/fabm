@@ -23,20 +23,21 @@ db.define_table(
     'reservations',
     Field('start_date', 'datetime', notnull=True),
     Field('stop_date', 'datetime', notnull=True),
-    Field('user_id', db.auth_user, notnull=True),
-    Field('validated_by', db.auth_user),
+    Field('user_id', 'reference auth_user', notnull=True,  default=auth.user.id),
+    Field('validated_by', 'reference auth_user'),
     Field('events', 'list:reference events'),
-    Field('machine', db.machines),
+    Field('machine', 'reference machines'),
     format = '%(machine)s %(start_date)s/$(stop_date)s')
+db.reservations.validated_by.requires=IS_IN_DB(db(db.auth_membership.group_id==1))
 
 db.define_table(
     'usages',
-    Field('machine', db.machines, notnull=True),
+    Field('machine', 'reference machines', notnull=True),
     Field('usage_date', 'datetime', default=request.now),
     Field('usage_message', 'string', notnull=True),
     Field('price', 'float', notnull=True),
-    Field('user_id', db.auth_user, notnull=True),
-    Field('fabmanager', db.auth_user),
+    Field('user_id', 'reference auth_user', notnull=True),
+    Field('fabmanager', 'reference auth_user'),
     Field('details', 'json'),
     format = '%(machine)s %(date)s')
 
@@ -44,9 +45,9 @@ db.define_table(
     'events',
     Field('event_date', 'datetime', default=request.now),
     Field('event_message', 'string', notnull=True),
-    Field('event_type',  requires = IS_IN_SET(['log', 'message']), notnull=True),
-    Field('user_id', 'string', notnull=True),
-    format = '%(event_date)s')
+    Field('event_type',  requires = IS_IN_SET(['log', 'message']), default='log', notnull=True),
+    Field('user_id', 'reference auth_user',  default=auth.user.id),
+    format = '%(event_date)s [%(id)s]')
 
 db.define_table(
     'consumables',

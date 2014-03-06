@@ -150,3 +150,41 @@ CREATE TABLE product(
     tags TEXT
 );
 success!
+timestamp: 2014-03-06T11:30:53.246143
+ALTER TABLE product ADD events TEXT;
+success!
+success!
+success!
+success!
+success!
+timestamp: 2014-03-06T18:10:09.828610
+ALTER TABLE auth_user ADD member_type CHAR(512) NOT NULL DEFAULT 'not_member';
+timestamp: 2014-03-06T18:10:09.997920
+ALTER TABLE auth_user ADD member_parent INTEGER REFERENCES auth_user (id) ON DELETE CASCADE;
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
