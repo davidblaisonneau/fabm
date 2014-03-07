@@ -2,7 +2,11 @@ from gluon import current
 from fabuser import Fabuser
 from event import Event
 uid = 14
+
 def index():
+    return dict(myauth=auth.user )
+
+def set_fabmanager():
     fabuser = Fabuser(db,auth)
     user = fabuser.get_user(uid)
     res = fabuser.set_fabmanager(True)
@@ -54,5 +58,12 @@ def test2():
     return dict(products=product_new)
 
 def list_fabmanagers():
-    l = db(db.auth_membership.group_id==1).select(db.auth_membership.id).as_list()
-    return dict(list=l.as_list())
+    rows = db(db.auth_membership.group_id==1).select(db.auth_membership.id,db.auth_membership.user_id)
+    managers=[]
+    for i in range(0,len(rows)): managers.append(rows.render(i))
+    form = SQLFORM.factory(
+        Field('users', requires=IS_IN_DB(db, 'auth_user.id', '%(first_name)s %(last_name)s')),
+        Field('fabmanager', requires=IS_IN_SET([r['id'] for r in managers], labels=[r['user_id'] for r in managers]))
+        )
+    
+    return dict(list=managers,form=form)

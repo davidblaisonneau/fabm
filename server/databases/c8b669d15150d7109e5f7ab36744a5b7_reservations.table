@@ -1,5 +1,5 @@
 (dp1
-S'user_id'
+S'machine'
 p2
 (dp3
 S'length'
@@ -10,19 +10,19 @@ p5
 I00
 sS'sortable'
 p6
-I4
+I7
 sS'sql'
 p7
-S'INTEGER REFERENCES auth_user (id) ON DELETE CASCADE'
+S'INTEGER REFERENCES machines (id) ON DELETE CASCADE'
 p8
 sS'notnull'
 p9
-I01
+I00
 sS'type'
 p10
-S'reference auth_user'
+S'reference machines'
 p11
-ssS'stop_date'
+ssS'user_id'
 p12
 (dp13
 g4
@@ -30,67 +30,18 @@ I512
 sg5
 I00
 sg6
-I3
+I4
 sg7
-S'TIMESTAMP NOT NULL'
+S'INTEGER REFERENCES auth_user (id) ON DELETE CASCADE'
 p14
 sg9
 I01
 sg10
-S'datetime'
+S'reference auth_user'
 p15
-ssS'id'
+ssS'events'
 p16
 (dp17
-g4
-I512
-sg5
-I00
-sg6
-I1
-sg7
-S'INTEGER PRIMARY KEY AUTOINCREMENT'
-p18
-sg9
-I00
-sg10
-g16
-ssS'machine'
-p19
-(dp20
-g4
-I512
-sg5
-I00
-sg6
-I7
-sg7
-S'INTEGER REFERENCES machines (id) ON DELETE CASCADE'
-p21
-sg9
-I00
-sg10
-S'reference machines'
-p22
-ssS'start_date'
-p23
-(dp24
-g4
-I512
-sg5
-I00
-sg6
-I2
-sg7
-S'TIMESTAMP NOT NULL'
-p25
-sg9
-I01
-sg10
-g15
-ssS'events'
-p26
-(dp27
 g4
 I512
 sg5
@@ -99,15 +50,49 @@ sg6
 I6
 sg7
 S'TEXT'
-p28
+p18
 sg9
 I00
 sg10
 S'list:reference events'
-p29
+p19
+ssS'stop_date'
+p20
+(dp21
+g4
+I512
+sg5
+I00
+sg6
+I3
+sg7
+S'TIMESTAMP NOT NULL'
+p22
+sg9
+I01
+sg10
+S'datetime'
+p23
+ssS'id'
+p24
+(dp25
+g4
+I512
+sg5
+I00
+sg6
+I1
+sg7
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
+p26
+sg9
+I00
+sg10
+S'id'
+p27
 ssS'validated_by'
-p30
-(dp31
+p28
+(dp29
 g4
 I512
 sg5
@@ -116,10 +101,25 @@ sg6
 I5
 sg7
 S'INTEGER REFERENCES auth_user (id) ON DELETE CASCADE'
-p32
+p30
 sg9
 I00
 sg10
-S'reference auth_user'
+g15
+ssS'start_date'
+p31
+(dp32
+g4
+I512
+sg5
+I00
+sg6
+I2
+sg7
+S'TIMESTAMP NOT NULL'
 p33
+sg9
+I01
+sg10
+g23
 ss.

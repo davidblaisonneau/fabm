@@ -290,6 +290,7 @@
 'User Voice': "Voix de l'utilisateur",
 'Users': 'Usagers',
 'Validated By': 'Validated By',
+'Value not in database': 'Value not in database',
 'Verify Password': 'Vérifiez le mot de passe',
 'Videos': 'Vidéos',
 'View': 'Présentation',
