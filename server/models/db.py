@@ -56,14 +56,20 @@ auth.settings.extra_fields['auth_user']= [
     Field('address', 'string'),
     Field('zip_code', 'string'),
     Field('city', 'string'),
-    Field('avatar', 'upload', default='', uploadfolder=os.path.join(request.folder,'static/avatar')),
+    Field('birth_date', 'date', notnull=True),
+    Field('avatar', 'upload', default='', uploadfolder=os.path.join(request.folder,'static/avatar'),autodelete=True),
+    Field('photo', 'upload', default='', uploadfolder=os.path.join(request.folder,'static/photo'),autodelete=True),
     Field('history', 'list:reference events',writable=False),
     Field('badges', 'list:reference badges', writable=False),
     Field('UM_balance', 'float', writable=False, default=0.0),
     Field('member_type',  requires = IS_IN_SET(['not_member', 'social', 'individual', 'enterprise', 'employee']), default='not_member', notnull=True),
     Field('member_parent', 'reference auth_user' ),
     Field('member_end_date', 'date',writable=False),
-    Field('diffusion_photo', 'boolean', default=True)]
+    Field('diffusion_photo', 'boolean', default=True),
+    Field('accept_rules', 'boolean', default=False, notnull=True),
+    Field('user_responsability', 'boolean', default=False, notnull=True),
+    Field('tutor_responsability', 'boolean', default=False),
+    ]
 auth.define_tables(username=False, signature=False)
 
 ## Check Fabmanager table exists
