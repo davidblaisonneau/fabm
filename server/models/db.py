@@ -111,9 +111,3 @@ use_janrain(auth, filename='private/janrain.key')
 
 ## after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
-db.define_table('tag',Field('name'),format='%(name)s')
-db.define_table('product',
-    Field('name'),
-    Field('tags','list:reference tag'),
-    Field('events','list:reference events')
-    )

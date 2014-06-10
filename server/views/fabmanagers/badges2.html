@@ -5,7 +5,7 @@
 {{for badge in badges:}}
     <span  style="display: inline-block">
     <figure style='width:120px;text-align:center'>
-        {{caption=CAT('[',badge.id,'] ',badge.badge_type,' / ',T(badge.badge_level))}}
+        {{caption=CAT('[',badge.id,'] ',badge.category,' / ',T(badge.badge_lvl))}}
         <img src='/fabm/static/badges/{{=badge.icon}}' alt='{{=caption}}'/>
         <figcaption>{{=caption}}</figcaption>
     </figure>

@@ -8,7 +8,7 @@ response.menu = [[T('Users'), False, URL('users')],
                  [T('Usages'), False, URL('usages')],
                  [T('Reservations'), False, URL('reservations')],
                  [T('Categories'), False, URL('categories')],
-                 [T('Badges'), False, URL('badges')],
+                 [T('Badges'), False, URL('badges3')],
                  [T('Pictures'), False, URL('pictures')],
                  [T('Logs'), False, URL('logs')]]
 
@@ -98,16 +98,50 @@ def consumables():
                             )
     return locals()
 
+
+@auth.requires(auth.has_membership(role='Fab Manager'))
+def consumables2():
+
+    query=((db.consumables))
+    fields = (db.consumables.name, db.consumables.quantity, db.consumables.consumable_location, db.consumables.category, db.consumables.picture, db.consumables.thumb)
+    headers = {'consumables.name':   'Name',
+                'consumables.quantity': 'quantity',
+                'consumables.consumable_location': 'location',
+                'consumables.category': 'category',
+                'consumables.thumb': 'thumbnail',
+                'consumables.picture': 'picture',
+                 }
+    default_sort_order=[db.consumables.category]
+    form = SQLFORM.grid(
+            query=query,
+            fields=fields,
+            headers=headers,
+            orderby=default_sort_order,
+            create=True,
+            deletable=True,
+            editable=True,
+            paginate=25,
+            showbuttontext=False,
+            upload=URL('default','download'),
+            maxtextlength=64,
+            oncreate=makeConsThumbnail,
+            onupdate=makeConsThumbnail,
+            )
+    resize=False
+    if len(request.args)>1 and (request.args(0) in 'new' or 'edit'):
+        db.consumables.thumb.readable = False
+    return dict(form=form)
+
 @auth.requires(auth.has_membership(role='Fab Manager'))
 def badges():
     db.badges.id.readable=False
     query=((db.badges))
-    fields = (db.badges.id, db.badges.badge_type, db.badges.badge_level, db.badges.icon)
+    fields = (db.badges.id, db.badges.category, db.badges.lvl, db.badges.picture)
     
     headers = {'badges.id':   'ID',
-           'badges.badge_type': 'Type',
-           'badges.badge_level': 'Level',
-           'badges.icon': 'Icon' }
+           'badges.category': 'Type',
+           'badges.lvl': 'Level',
+           'badges.picture': 'Icon' }
            
     default_sort_order=[db.badges.id]
     form = SQLFORM.grid(query=query, fields=fields, headers=headers, orderby=default_sort_order,
@@ -122,33 +156,39 @@ def badges2():
     if form.accepted:
         response.flash = TABLE(TR(
                             TD(IMG(_src="/fabm/static/badges/"+form.vars.icon, _width="100px")),
-                            TD(DIV(form.vars.badge_type),DIV(T(form.vars.badge_level)),DIV("inserted"))))
+                            TD(DIV(form.vars.category),DIV(T(form.vars.lvl)),DIV("inserted"))))
     return dict(badges=badges,form=form,args=request.args)
-    
-@auth.requires(auth.has_membership(role='Fab Manager'))
-def pictures2():
-    record = db.pictures(request.args(0))
-    buttons = [TAG.button(T('Submit'),_type="submit")]
-    
-    if len(request.args)!=0:
-        pictures = []
-        buttons[:0] = [TAG.button('Back',_type="button",_onClick = "parent.location='%s'" % URL())]
-        form_title=T("Modify a picture")
-    else:
-        pictures = db(db.pictures).select()
-        form_title=T("Add a picture")
 
-    form = SQLFORM(db.pictures, record,
-                    buttons = buttons,
-                    deletable=True,
-                    upload=URL('default','download'),
-                    )
-    if form.process().accepted:
-        response.flash = T('form accepted')
-        redirect(URL())
-    elif form.errors:
-        response.flash = T('form has errors')
-    return dict(pictures=pictures,form=form,form_title=form_title)
+@auth.requires(auth.has_membership(role='Fab Manager'))
+def badges3():
+    query=((db.badges))
+    fields = (db.badges.id, db.badges.category, db.badges.lvl, db.badges.thumb, db.badges.picture)
+    headers = {'badges.id':   'ID',
+                'badges.category': 'category',
+                'badges.lvl': 'level',
+                'badges.thumb': 'thumbnail',
+                'badges.picture': 'picture',
+                 }
+    default_sort_order=[db.badges.category]
+    form = SQLFORM.grid(
+            query=query,
+            fields=fields,
+            headers=headers,
+            orderby=default_sort_order,
+            create=True,
+            deletable=True,
+            editable=True,
+            paginate=25,
+            showbuttontext=False,
+            upload=URL('default','download'),
+            maxtextlength=64,
+            oncreate=makeSmallBadges,
+            onupdate=makeSmallBadges,
+            )
+    resize=False
+    if len(request.args)>1 and (request.args(0) in 'new' or 'edit'):
+        db.badges.thumb.readable = False
+    return dict(form=form)
 
 @auth.requires(auth.has_membership(role='Fab Manager'))
 def pictures():
@@ -173,25 +213,52 @@ def pictures():
             showbuttontext=False,
             upload=URL('default','download'),
             maxtextlength=64,
-            oncreate=makeThumbnail,
-            onupdate=makeThumbnail,
+            oncreate=makePicThumbnail,
+            onupdate=makePicThumbnail,
             )
     resize=False
     if len(request.args)>1 and (request.args(0) in 'new' or 'edit'):
         db.pictures.thumb.readable = False
     return dict(form=form)
 
-def makeThumbnail(form):
-    print form.vars
-    size=(150,150)
-    folder='static/pictures/'
-    thisImage=db(db.pictures.id==form.vars.id).select()[0]
+def makePicThumbnail(form):
     import os, uuid
     from PIL import Image
-    print thisImage
+    size=(150,150)
+    folder='static/pictures/'
+    thisImage=db(db.pictures.id==form.vars.id).select().first()
     im=Image.open(os.path.join(request.folder,folder) + thisImage.picture)
     im.thumbnail(size,Image.ANTIALIAS)
     thumbName='%s.thumb.jpg' % (uuid.uuid4())
     im.save(request.folder + folder + thumbName,'jpeg')
-    thisImage.update_record(thumb=thumbName)
+    thumbSteam = open(os.path.join(request.folder,folder) + thumbName, 'rb')
+    db(db.pictures.id==form.vars.id).update(thumb=db.pictures.thumb.store(thumbSteam, thumbName))
+    return 
+    
+def makeConsThumbnail(form):
+    import os, uuid
+    from PIL import Image
+    size=(150,150)
+    folder='static/pictures/'
+    thisImage=db(db.consumables.id==form.vars.id).select().first()
+    im=Image.open(os.path.join(request.folder,folder) + thisImage.picture)
+    im.thumbnail(size,Image.ANTIALIAS)
+    thumbName='%s.thumb.jpg' % (uuid.uuid4())
+    im.save(request.folder + folder + thumbName,'jpeg')
+    thumbSteam = open(os.path.join(request.folder,folder) + thumbName, 'rb')
+    db(db.consumables.id==form.vars.id).update(thumb=db.consumables.thumb.store(thumbSteam, thumbName))
+    return 
+    
+def makeSmallBadges(form):
+    import os, uuid
+    from PIL import Image
+    size=(48,48)
+    folder='static/badges/'
+    thisImage=db(db.badges.id==form.vars.id).select().first()
+    im=Image.open(os.path.join(request.folder,folder) + thisImage.picture)
+    im.thumbnail(size,Image.ANTIALIAS)
+    thumbName='%s.thumb.jpg' % (uuid.uuid4())
+    im.save(request.folder + folder + thumbName,'jpeg')
+    thumbSteam = open(os.path.join(request.folder,folder) + thumbName, 'rb')
+    db(db.badges.id==form.vars.id).update(thumb=db.pictures.thumb.store(thumbSteam, thumbName))
     return 

@@ -23,7 +23,7 @@ db.define_table(
     Field('unit_type' ),
     format = '%(name)s')
 db.machines.pictures.requires = IS_IN_DB(db,'pictures.id','%(name)s',multiple=True)
-db.machines.required_badges.requires = IS_IN_DB(db,'badges.id','%(badge_type)s/%(badge_level)s',multiple=True)
+db.machines.required_badges.requires = IS_IN_DB(db,'badges.id','%(category)s/%(badge_lvl)s',multiple=True)
 db.machines.usages.requires = IS_IN_DB(db,'usages.id','%(machine)s %(date)s',multiple=True)
 db.machines.reservations.requires = IS_IN_DB(db,'reservations.id','%(machine)s %(start_date)s/$(stop_date)s',multiple=True)
 db.machines.consumables.requires=IS_IN_DB(db,'consumables.id','%(name)s',multiple=True)
@@ -44,7 +44,7 @@ db.define_table(
     Field('picture', 'upload', uploadfolder=os.path.join(request.folder,'static/pictures'), notnull=True,autodelete=True),
     Field('thumb','upload', uploadfolder=os.path.join(request.folder,'static/pictures'),writable=False,readable=True,autodelete=True),
     format = '%(name)s')
-db.pictures.thumb.represent = lambda value,row: IMG(_src=URL('default','download', args=value),_width=50)
+db.pictures.thumb.represent = lambda value,row: IMG(_src=URL('default','download', args=value),_width=150)
 db.pictures.category.requires=IS_IN_DB(db,'categories.id','%(name)s')
 
 db.define_table(
@@ -89,19 +89,24 @@ db.define_table(
     Field('name', 'string', notnull=True),
     Field('quantity', 'integer', notnull=True),
     Field('consumable_location', 'string'),
+    Field('category', 'reference categories'),
     Field('events', 'list:reference events',writable=False),
-    Field('pictures', 'reference pictures'),
+    Field('picture', 'upload', uploadfolder=os.path.join(request.folder,'static/consumables'),autodelete=True),
+    Field('thumb','upload', uploadfolder=os.path.join(request.folder,'static/consumables'),writable=False,readable=True,autodelete=True),
     format = '%(name)s')
 db.consumables.events.requires=IS_IN_DB(db,'events.id',multiple=True)
-db.consumables.pictures.requires = IS_IN_DB(db,'pictures.id','%(name)s')
+db.consumables.category.requires=IS_IN_DB(db,'categories.id','%(name)s')
+db.pictures.thumb.represent = lambda value,row: IMG(_src=URL('default','download', args=value),_width=150)
 
 db.define_table(
     'badges',
-    Field('badge_type', 'string', notnull=True),
-    Field('badge_level',  notnull=True, requires = IS_IN_SET(['super user', 'operator', 'administrator'])),
-    Field('icon', 'upload',  notnull=True, uploadfolder=os.path.join(request.folder,'static/badges'),autodelete=True),
-    format = '%(badge_type)s/%(badge_level)s')
-
+    Field('category', 'reference categories'),
+    Field('lvl',  requires = IS_IN_SET(['user','super user', 'operator', 'administrator'])),
+    Field('picture', 'upload', uploadfolder=os.path.join(request.folder,'static/badges'),autodelete=True),
+    Field('thumb','upload', uploadfolder=os.path.join(request.folder,'static/badges'),writable=False,readable=True,autodelete=True),
+    format = '%(category)s/%(lvl)s')
+db.badges.thumb.represent = lambda value,row: IMG(_src=URL('default','download', args=value),_width=48)
+db.badges.category.requires=IS_IN_DB(db,'categories.id','%(name)s')
 
 #~ Set default user
 if auth.user!=None:
