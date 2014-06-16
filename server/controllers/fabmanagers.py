@@ -4,7 +4,7 @@ from fabuser import Fabuser
 
 response.menu = [[T('Users'), False, URL('users')],
                  [T('Machines'), False, URL('machines')],
-                 [T('Consumables'), False, URL('consumables')],
+                 [T('Consumables'), False, URL('consumables2')],
                  [T('Usages'), False, URL('usages')],
                  [T('Reservations'), False, URL('reservations')],
                  [T('Categories'), False, URL('categories')],
@@ -103,11 +103,12 @@ def consumables():
 def consumables2():
 
     query=((db.consumables))
-    fields = (db.consumables.name, db.consumables.quantity, db.consumables.consumable_location, db.consumables.category, db.consumables.picture, db.consumables.thumb)
+    fields = (db.consumables.name, db.consumables.quantity, db.consumables.consumable_location, db.consumables.category,db.consumables.price, db.consumables.picture, db.consumables.thumb)
     headers = {'consumables.name':   'Name',
                 'consumables.quantity': 'quantity',
                 'consumables.consumable_location': 'location',
                 'consumables.category': 'category',
+                'consumables.price': 'price',
                 'consumables.thumb': 'thumbnail',
                 'consumables.picture': 'picture',
                  }
@@ -239,7 +240,7 @@ def makeConsThumbnail(form):
     import os, uuid
     from PIL import Image
     size=(150,150)
-    folder='static/pictures/'
+    folder='static/consumables/'
     thisImage=db(db.consumables.id==form.vars.id).select().first()
     im=Image.open(os.path.join(request.folder,folder) + thisImage.picture)
     im.thumbnail(size,Image.ANTIALIAS)

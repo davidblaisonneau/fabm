@@ -90,13 +90,16 @@ db.define_table(
     Field('quantity', 'integer', notnull=True),
     Field('consumable_location', 'string'),
     Field('category', 'reference categories'),
+    Field('price', 'float'),
     Field('events', 'list:reference events',writable=False),
     Field('picture', 'upload', uploadfolder=os.path.join(request.folder,'static/consumables'),autodelete=True),
     Field('thumb','upload', uploadfolder=os.path.join(request.folder,'static/consumables'),writable=False,readable=True,autodelete=True),
     format = '%(name)s')
 db.consumables.events.requires=IS_IN_DB(db,'events.id',multiple=True)
 db.consumables.category.requires=IS_IN_DB(db,'categories.id','%(name)s')
-db.pictures.thumb.represent = lambda value,row: IMG(_src=URL('default','download', args=value),_width=150)
+db.consumables.picture.capture="camera"
+db.consumables.picture.accept="image/*"
+db.consumables.thumb.represent = lambda value,row: IMG(_src=URL('static','consumables', args=value),_width=150)
 
 db.define_table(
     'badges',
@@ -105,7 +108,7 @@ db.define_table(
     Field('picture', 'upload', uploadfolder=os.path.join(request.folder,'static/badges'),autodelete=True),
     Field('thumb','upload', uploadfolder=os.path.join(request.folder,'static/badges'),writable=False,readable=True,autodelete=True),
     format = '%(category)s/%(lvl)s')
-db.badges.thumb.represent = lambda value,row: IMG(_src=URL('default','download', args=value),_width=48)
+db.badges.thumb.represent = lambda value,row: IMG(_src=URL('static','badges', args=value),_width=48)
 db.badges.category.requires=IS_IN_DB(db,'categories.id','%(name)s')
 
 #~ Set default user

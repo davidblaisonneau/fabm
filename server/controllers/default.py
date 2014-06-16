@@ -9,6 +9,10 @@
 ## - call exposes all registered services (none by default)
 #########################################################################
 
+response.menu = [[T('Objects'), False, URL(c='objects')],
+                 [T('FabManagers'), False, URL(c='fabmanagers')],]
+
+
 
 def index():
     """

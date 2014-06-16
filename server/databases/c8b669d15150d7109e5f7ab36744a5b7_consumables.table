@@ -30,7 +30,7 @@ I512
 sg5
 I00
 sg6
-I7
+I8
 sg7
 S'CHAR(512)'
 p14
@@ -47,7 +47,7 @@ I512
 sg5
 I00
 sg6
-I8
+I9
 sg7
 S'CHAR(512)'
 p18
@@ -95,7 +95,7 @@ sS'type'
 p31
 S'reference pictures'
 p32
-ssS'events'
+ssS'price'
 p33
 (dp34
 g4
@@ -105,16 +105,33 @@ I00
 sg6
 I6
 sg7
-S'TEXT'
+S'DOUBLE'
 p35
 sg9
 I00
 sg10
-S'list:reference events'
+S'float'
 p36
-ssS'consumable_location'
+ssS'events'
 p37
 (dp38
+g4
+I512
+sg5
+I00
+sg6
+I7
+sg7
+S'TEXT'
+p39
+sg9
+I00
+sg10
+S'list:reference events'
+p40
+ssS'consumable_location'
+p41
+(dp42
 g4
 I512
 sg5
@@ -123,14 +140,14 @@ sg6
 I4
 sg7
 S'CHAR(512)'
-p39
+p43
 sg9
 I00
 sg10
 g22
 ssS'id'
-p40
-(dp41
+p44
+(dp45
 g4
 I512
 sg5
@@ -139,15 +156,15 @@ sg6
 I1
 sg7
 S'INTEGER PRIMARY KEY AUTOINCREMENT'
-p42
+p46
 sg9
 I00
 sg10
 S'id'
-p43
+p47
 ssS'quantity'
-p44
-(dp45
+p48
+(dp49
 g4
 I512
 sg5
@@ -156,10 +173,10 @@ sg6
 I3
 sg7
 S'INTEGER NOT NULL'
-p46
+p50
 sg9
 I01
 sg10
 S'integer'
-p47
+p51
 ss.
